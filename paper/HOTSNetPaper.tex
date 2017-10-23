@@ -284,7 +284,11 @@ In order to find the best classifier, a number of different approaches were used
 
 \subsection{Initial Modeling}
 
-Two models were created to experiment with the data.  A naive bayesian classifier was used as a benchmark model and provided a quick way of determining if a particular feature encoding contained information that could be used to predict game outcomes.  A neural net with two hidden layers was found to consistently outperform the naive bayesian classifier, and was also used to test different feature encodings.
+Two models were created to experiment with the data.  A naive bayesian classifier was used as a benchmark model and provided a quick way of determining if a particular feature encoding contained information that could be used to predict game outcomes.  A neural net was found to consistently outperform the naive bayesian classifier, and was also used to test different feature encodings.
+
+I choose to use a naive bayes classifier after noticing patterns such as certain heroes being more likely to win, and certain team compositions being more likely to win.  Both of these attributes suggest a bayesian classifier will perform with better than 50\%.
+
+I played with neural network architectures just a small amount before attempting to optimized the feature encoding.  I found a two layer network with two hidden layers  with 500 perceptrons each performed favorably to the bayes classifier, and proceeded to test with it.  I also added dropout layers to prevent overfitting.
 
 \subsection{Initial Feature Selection}
 
@@ -327,9 +331,25 @@ Due in large part to the way the code is written, it takes a long time to export
 
 This showed up in different ways throughout my testing.  A good illustration of this occurs when doing K-fold validation on different models.  Using more folds meant more data would be used to train and less to validate, and accuracy would go up.  I initially was using far less of the dataset, but it became clear it would be a good idea to use as much of the dataset as possible.
 
+\subsection{Model Hyperparameters}
+
+Once I was satisfied with the data preprocessing step, I turned my attention to optimizing the model more.  The features considered for optimization were:
+
+\begin{itemize}
+\item how many layers to use
+\item number of perceptrons in each later
+\item how much dropout to use
+\item whether or not to include a batch normalization layer
+\item the optimizer to use; then the learning rate and beta1 for the Adam optimizer
+\item what kind of activation to use for the perceptrons
+\item batch size
+\end{itemize}
+
+All of these features had an effect on the final accuracy of the model, although some parameters did allow a wide range of acceptable values.
+
 \subsection{Model Selection}
 
-Once I was satisfied with the data preprocessing step, I turned my attention to optimizing the model more.  I used \textbf{Keras} to build and train the models.  I set the number of epochs automatically by using a callback to monitor the validation loss and terminate training once it stopped improving.
+I used \textbf{Keras} to build and train the models.  I set the number of epochs automatically by using a callback to monitor the validation loss and terminate training once it stopped improving.
 
 I tried experiments using different number of layers, different activation functions, and more.  I started to get a better idea of what was working and which parameters might be useful, and wrote a function to generate different models with varying architectures.  The function builds a network with 1, 2, or 3 hidden layers.  Each layer has a random number of perceptrons and a random dropout level below it.  Different activations were tried, but I ultimately found PReLU to be to best and it became hardcoded.  I also experimented with a batch normalization layer, but since the input was already well normalized, this turned out not to help.  I also tested different optimizers and found Adam to work the best.
 
@@ -355,7 +375,7 @@ I elected to build a network with 1 dense layer with 1000 nodes, a PReLU activat
 The next step was to train a model with as much data as possible with the parameters I had found.  More data to train with would probably be better, but some data must be kept to use for validation.  The final dataset had 1,751,851 games.  I ended up using 200,000 games as validation, split in two phases.  I saved one group of 100,000 games as holdout data for final validation.  I took the remaining 1,651,851 games and trained the model 6 times with it.  For each of these trials, a random 100,000 games was used as the validation data.  Thus, the model was trained with 1,551,851 games each time.
 
 \begin{figure}[h]
-\caption{Training stats}
+\caption{Optimized Training Stats}
 \label{figure:training}
 \includegraphics[width=\linewidth]{training}
 \centering
@@ -373,7 +393,18 @@ Following the selection of model weights, I take the remaining 100,000 games whi
 
 The naive bayesian classifier was trained using  using the same dataset available to neural network.  The overall accuracy was 56.7\%.
 
-\subsection {Accuracy}
+\subsection {Unoptimized Neural Network Accuracy}
+
+\begin{figure}[h]
+\caption{Unoptimized Training Stats}
+\label{figure:500training}
+\includegraphics[width=\linewidth]{500training}
+\centering
+\end{figure}
+
+The initial 2 layer, 500 perceptron network achieved 59.2\% accuracy on validation data, as show in Figure \ref{figure:500training}.  Through the choice of better hyperparameters, accuracy is increased by about 3\%.
+
+\subsection {Optimized Neural Network Accuracy}
 
 \begin{table}[h]
 \caption{Model Accuracy}
