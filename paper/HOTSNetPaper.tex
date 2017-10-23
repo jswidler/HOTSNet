@@ -124,7 +124,7 @@ In this game mode, players can play against each other in ranked and unranked pl
 
 The goal of the project is to develop a classifier capable of predicting the odds of a team winning a \textit{Heroes of the Storm} match.
 
-Using Keras, we will build a network to complete this task.  The problem is one of binary classification - given \textbf{Team A} and \textbf{Team B}, will \textbf{Team A} win?  We will use log loss to measure the performance of the model during training.  This make sense because the problem is one of binary classification, and it will help make sure the model developed is well calibrated - it must not only say which team is most likely to win, but also how likely that team is to win.
+Using \textbf{Keras}, we will build a network to complete this task.  The problem is one of binary classification - given \textbf{Team A} and \textbf{Team B}, will \textbf{Team A} win?  We will use log loss to measure the performance of the model during training.  This make sense because the problem is one of binary classification, and it will help make sure the model developed is well calibrated - it must not only say which team is most likely to win, but also how likely that team is to win.
 
 After training, we will measure the accuracy and calibration of the model.  The best model should have the highest accuracy.
 
@@ -140,7 +140,7 @@ We would like to use as much data as possible, as we expect more examples will i
 
 The dataset used in the analysis done by this paper was dated October 19, 2017.  It contained 1,954,853 games.
 
-The dataset contains three \textit{csv} files.  Game are described by 10 rows in one \textit{csv} and 1 row in another.  The dataset will be rewritten before processing so each game is represented by a single row in a different \textit{csv}.
+The dataset contains three \textit{csv} files.  Games are described by 10 rows in one \textit{csv} and 1 row in another.  The dataset will be rewritten before processing so each game is represented by a single row in a different \textit{csv}.
 
 \subsection{Game Modes}
 
@@ -258,7 +258,7 @@ The game breaks heroes down into four classifications: \textbf{Warrior}, \textbf
 \floatfoot{\textit{Analysis of all the games in the dataset set shows that some team compositions are stronger than others.}  Top percentage shows probability the composition on the left will beat the composition on the bottom.  Bottom number is the total number of games which were played with this matchup.  \textbf{A=Assassin, Sp=Specialist, Su=Support, W=Warrior}, for instance \mbox{\textbf{1A 2Sp 1Su 1W}} means the team had one assassin, two specialists, one support, and one warrior.}
 \end{table*}
 
-The most competitive teams will use a variety of heroes.  This is illustrated in an interesting way in Table \ref{table:compmatchup}.  The teams compositions are grouped by the number of heroes in each of the four hero groups on the team, and compared against each other.  As expected, hero choice matters in determining who will win.  For instance, a team without any support heroes does much worse than teams with all four groups.  However, even in unbalanced matchups, there is still a reasonable chance for the "weaker" group composition to have won.
+The most competitive teams will use a variety of heroes.  This is illustrated in an interesting way in Table \ref{table:compmatchup}.  The team compositions are grouped by the number of heroes in each of the four hero groups on the team, and compared against each other.  As expected, hero choice matters in determining who will win.  For instance, a team without any support heroes does much worse than teams with all four groups.  However, even in unbalanced matchups, there is still a reasonable chance for the "weaker" group composition to have won.
 
 \subsection {Players}
 \label{players}
@@ -284,7 +284,7 @@ In order to find the best classifier, a number of different approaches were used
 
 \subsection{Initial Modeling}
 
-Two models were created to experiment with the data.  Noticing the patterns in the dataset, a naive bayesian classifier was used as a benchmark model and provided a quick way of determining if a particular feature encoding contained information that could be used to predict game outcomes.  A neural net with two hidden layers was found to consistently outperform the naive bayesian classifier, and was also used to test different feature encodings.
+Two models were created to experiment with the data.  A naive bayesian classifier was used as a benchmark model and provided a quick way of determining if a particular feature encoding contained information that could be used to predict game outcomes.  A neural net with two hidden layers was found to consistently outperform the naive bayesian classifier, and was also used to test different feature encodings.
 
 \subsection{Initial Feature Selection}
 
@@ -294,11 +294,11 @@ One possible solution to this issue is to use one hot encoding on all the catego
 
 I did not want to lose information about how good and experienced the player was with their hero, as some heroes are much harder to play than others.  I decided to add this information directly into the hero selection feature.  Because we have two pieces of information about each player, their MMR and their hero level, I split each possible hero choice into two features per team.  The labels for these features are things like \textit{a\_herommr\_Rexxar} and \textit{a\_herolevel\_Rexxar}.  The first character of the labels is either \textit{a} or \textit{b} depending on which team the player on.  If a hero is present on a team, the player's MMR and hero level is filled into the column.  For heroes which are not on the team, the values are set to zero.  With 71 heroes, this is 142 features per team and 284 features per game.
 
-The maps and gamemodes are one hot encoded, which adds 12 and 4 additional features respectively, bringing the total to 300 features.  With these 300 features, everything about the game we know is included.
+The maps and game modes are one hot encoded, which adds 12 and 4 additional features respectively, bringing the total to 300 features.  With these 300 features, everything about the game we know is included.
 
 \subsection {Feature Experiments}
 
-Other ways of creating features were tried.
+Other ways of creating features were tried in an attempt to increase the signal form the dataset.  The previous 300 features are sparse, and I expected there would be better ways to describe the game.
 
 One successful improvement was to add features which contained the number of each type of hero on each team.  This was tried with group labels, subgroup labels, and artificially created labels that were generated through PCA (principal component analysis) of hero stats and a clustering algorithm.  The automatically generated labels also helped improve the prediction rates, however for the most part, no labels out performed subgroups, and there was little to no improvement when multiple typings were used in my experiments.  In the final model, we retain the subgroup counts.  There are 9 subgroups, so a total of 18 features are added to the inputs.
 
@@ -306,14 +306,13 @@ Another set of features which was tried and retained is a separate set of column
 
 All together, there are 338 features which were fed into the final model.
 
-One experiment which did help the benchmark model, but did not help neural network, was to use PCA to change each hero into a number of dimensions.  By doing this, we can reduce the number of inputs needed to describe the team.  If we use five dimensions per hero, we can describe a team using 35 features, instead of 71.  This encoding allowed the benchmark to exceed 57\% accuracy, an improvement of 0.5\%, and may have helped the neural network when only a subset of the dataset was being used for training.  Once enough data was being used for training purposes, any improvement from PCA features disappeared, I so I ultimately decided not to include them in the final model.
+One experiment which did help the benchmark model, but did not help the neural network, was to use PCA to change each hero into a number of dimensions.  By doing this, we can reduce the number of inputs needed to describe the team.  If we use five dimensions per hero, we can describe a team using 35 features, instead of 71.  This encoding allowed the benchmark to exceed 57\% accuracy, an improvement of 0.5\%, and may have helped the neural network when only a subset of the dataset was being used for training.  Once enough data was being used for training purposes, any improvement from PCA features disappeared, I so I ultimately decided not to include them in the final model.
 
 \begin{figure}
-\caption{Hero PCA}
+\caption{Heroes plotted against the first three principal components and colored by their \textbf{HOTSLogs} subgroup label}
 \label{figure:heropca}
 \centering
 \includegraphics[width=\linewidth]{heropca}
-\floatfoot{Heroes plotted against the first three principal components and colored by their \textbf{HOTSLogs} subgroup label}
 \end{figure}
 
 \subsection{Feature Normalization}
@@ -330,7 +329,7 @@ This showed up in different ways throughout my testing.  A good illustration of 
 
 \subsection{Model Selection}
 
-Once I was satisfied the data preprocessing step, I turned my attention to optimizing the model more.  I used Keras to build and train the models.  I set the number of epochs automatically by using a callback to monitor the validation loss and terminate training once it stops improving.
+Once I was satisfied with the data preprocessing step, I turned my attention to optimizing the model more.  I used \textbf{Keras} to build and train the models.  I set the number of epochs automatically by using a callback to monitor the validation loss and terminate training once it stopped improving.
 
 I tried experiments using different number of layers, different activation functions, and more.  I started to get a better idea of what was working and which parameters might be useful, and wrote a function to generate different models with varying architectures.  The function builds a network with 1, 2, or 3 hidden layers.  Each layer has a random number of perceptrons and a random dropout level below it.  Different activations were tried, but I ultimately found PReLU to be to best and it became hardcoded.  I also experimented with a batch normalization layer, but since the input was already well normalized, this turned out not to help.  I also tested different optimizers and found Adam to work the best.
 
@@ -349,7 +348,7 @@ After trying out many different networks, the best parameters were manually pick
 \item lowering the default learning rate to at least .0001 had a positive effect
 \end{itemize}
 
-I elected to build a network with 1 dense layer with 1000 nodes, a PReLU activation layer,  50\% dropout, using the Adam optimizer with a learning rate set to .00005 and beta1 set to .7, and a training batch size of 2000.  When I specifically tested this setup, it performed just as good as the top performers from the randomized trials.
+I elected to build a network with 1 dense layer with 1000 nodes, a PReLU activation layer,  50\% dropout, using the Adam optimizer with a learning rate set to .00005 and beta1 set to .7, and a training batch size of 2000.  When I specifically tested this setup, it performed just as good as the top performers from the randomized trials, which was around 61.7\%.
 
 \section {Building the Final Model}
 
@@ -362,11 +361,12 @@ The next step was to train a model with as much data as possible with the parame
 \centering
 \end{figure}
 
-Each of the six trained models had very similar levels of accuracy and loss.  The mean validation accuracy was 62.10\% with 1 standard deviation of 0.08\%.  The mean validation loss was  0.64625 with 1 standard deviation of 0.00089
+Each of the six trained models had very similar levels of accuracy and loss.  The mean validation accuracy was 62.10\% with 1 standard deviation of 0.08\%.  The mean validation loss was  0.64625 with 1 standard deviation of 0.00089.  This is a 0.4\% higher accuracy than any of the results achieved during the model selection, and I was pleasantly surprised.  The reason is because the training set is larger.
 
 I selected the weights with the lowest loss from the 6 trials, and considered those the winner.
 
 \section {Results}
+
 Following the selection of model weights, I take the remaining 100,000 games which was excluded from the training rounds and use it to further validate and explore the results.  
 
 \subsection {Benchmark model}
@@ -404,7 +404,7 @@ On the holdout data, the trained model achieves 62.1\% accuracy.  Figure \ref{fi
 \includegraphics[width=\linewidth]{calibration}
 \end{figure}
 
-While predicting the eventual winner is ideal, it is simply not possible to know which team will win with complete certainty because either team can potentially win.  Thus, to apply our model we would like it tell us what the chances are that a particular team will win.  After analyzing the results of the classifier, I found that it was not necessary to modify the output in any way.  I realized afterwards this is because of the loss function we are using, binary cross entropy, naturally causes the classifier to produce calibrated results.  We can see the model is well calibrated in Figure \ref{figure:calib}.  This means the output of the model directly tells us what are the chances that the first team will win.
+While predicting the eventual winner is ideal, it is simply not possible to know which team will win with complete certainty because either team can potentially win.  This means it is better for our model to tell us what the chances are that a particular team will win than to only guess which team will win.  After analyzing the results of the classifier, I found that it was not necessary to modify the output in any way.  I realized afterwards this is because of the loss function we are using, binary cross entropy, naturally causes the classifier to produce calibrated results.  We can see the model is well calibrated in Figure \ref{figure:calib}.  This means the output of the model directly tells us what are the chances that the first team will win.
 
 \subsection{Confidence}
 
