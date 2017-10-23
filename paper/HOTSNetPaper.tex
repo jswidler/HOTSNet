@@ -222,7 +222,7 @@ matchups_{draft} &= \frac{{71 \choose 5}\times{71-5 \choose 5}}{2} \\
 
 We find there are more than 84 trillion possible matchups for \textit{quick match} and over 58 trillion for the other modes when only hero selection is considered.
 
-Some heroes are more likely to win than others.  The top five heroes, sorted by win, are listed in Table \ref{table:winpercent}.
+Some heroes are more likely to win than others.  The top and bottom five heroes, sorted by win, are listed in Table \ref{table:winpercent}.
 
 \begin{table}[h]
 \caption{Top and Bottom Five Heroes by Win Percent}
@@ -238,7 +238,7 @@ Samuro & 55.3\% \\
 Nazeebo & 54.8\% \\
 Zagara & 53.6\% \\
 \dots \\
-Akarak & 45.2\% \\
+Alarak & 45.2\% \\
 Tychus & 45.0\% \\
 Garrosh & 44.7\% \\
 Chromie & 43.8\% \\
@@ -273,7 +273,7 @@ The dataset contains information on how each player performed in each game.  Mos
 
 The hero is identified by the hero id; 1-71.  The player's level with a hero is roughly approximate to how many games the player has played the specific hero in the past.  The player's MMR is not the same MMR used by \textbf{Blizzard}'s matchmaker, but is instead a \textbf{HOTSLogs} derived number, which should still measure the player's overall skill, although some game data might be missing.
 
-Some outliers in this data was found.  The most obvious what that some games had players who did not have a known MMR or hero level.  Another case was players with very low or very high MMRs.  Rather than deal with the added complexity of dealing with these edge cases with different properties from the games that most people play, they were filtered from the dataset.  This resulted in 203,002 games being filtered, reducing the overall size of the dataset by 10.4\% and leaving 1,751,851 games to train with.
+Some outliers in this data was found.  The most obvious one is that some games had players who did not have a known MMR or hero level.  Another case was players with very low or very high MMRs.  Rather than deal with the added complexity of dealing with these edge cases with different properties from the games that most people play, they were filtered from the dataset.  This resulted in 203,002 games being filtered, reducing the overall size of the dataset by 10.4\% and leaving 1,751,851 games to train with.
 
 
 %------------------------------------------------
