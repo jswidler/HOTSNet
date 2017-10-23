@@ -306,7 +306,7 @@ Another set of features which was tried and retained is a separate set of column
 
 All together, there are 338 features which were fed into the final model.
 
-One experiment which did help the benchmark model, but did not help the neural network, was to use PCA to change each hero into a number of dimensions.  By doing this, we can reduce the number of inputs needed to describe the team.  If we use five dimensions per hero, we can describe a team using 35 features, instead of 71.  This encoding allowed the benchmark to exceed 57\% accuracy, an improvement of 0.5\%, and may have helped the neural network when only a subset of the dataset was being used for training.  Once enough data was being used for training purposes, any improvement from PCA features disappeared, I so I ultimately decided not to include them in the final model.
+One experiment which did help the benchmark model, but did not help the neural network, was to use PCA to change each hero into a number of dimensions.  By doing this, we can reduce the number of inputs needed to describe the team.  If we use five dimensions per hero, we can describe a team using 35 features (25 for the team, 5 for mmrs, and 5 for levels), instead of 142.  This encoding allowed the benchmark to exceed 57\% accuracy, an improvement of 0.5\%, and may have helped the neural network when only a subset of the dataset was being used for training.  Once enough data was being used for training purposes, any improvement from PCA features disappeared, I so I ultimately decided not to include them in the final model.
 
 \begin{figure}
 \caption{Heroes plotted against the first three principal components and colored by their \textbf{HOTSLogs} subgroup label}
