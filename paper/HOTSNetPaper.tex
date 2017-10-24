@@ -75,6 +75,7 @@
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
+\usepackage{adjustbox}
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
@@ -374,10 +375,12 @@ I elected to build a network with 1 dense layer with 1000 nodes, a PReLU activat
 
 The next step was to train a model with as much data as possible with the parameters I had found.  More data to train with would probably be better, but some data must be kept to use for validation.  The final dataset had 1,751,851 games.  I ended up using 200,000 games as validation, split in two phases.  I saved one group of 100,000 games as holdout data for final validation.  I took the remaining 1,651,851 games and trained the model 6 times with it.  For each of these trials, a random 100,000 games was used as the validation data.  Thus, the model was trained with 1,551,851 games each time.
 
-\begin{figure}[h]
+\begin{figure}
 \caption{Optimized Training Stats}
 \label{figure:training}
+\begin{adjustbox}{center}
 \includegraphics[width=\linewidth]{training}
+\end{adjustbox}
 \centering
 \end{figure}
 
@@ -395,11 +398,10 @@ The naive bayesian classifier was trained using  using the same dataset availabl
 
 \subsection {Unoptimized Neural Network Accuracy}
 
-\begin{figure}[h]
+\begin{figure}
 \caption{Unoptimized Training Stats}
 \label{figure:500training}
-\includegraphics[width=\linewidth]{500training}
-\centering
+\includegraphics[width=136pt]{500training}
 \end{figure}
 
 The initial 2 layer, 500 perceptron network achieved 59.2\% accuracy on validation data, as show in Figure \ref{figure:500training}.  Through the choice of better hyperparameters, accuracy is increased by about 3\%.
