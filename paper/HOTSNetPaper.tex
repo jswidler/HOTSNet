@@ -376,12 +376,9 @@ I elected to build a network with 1 dense layer with 1000 nodes, a PReLU activat
 The next step was to train a model with as much data as possible with the parameters I had found.  More data to train with would probably be better, but some data must be kept to use for validation.  The final dataset had 1,751,851 games.  I ended up using 200,000 games as validation, split in two phases.  I saved one group of 100,000 games as holdout data for final validation.  I took the remaining 1,651,851 games and trained the model 6 times with it.  For each of these trials, a random 100,000 games was used as the validation data.  Thus, the model was trained with 1,551,851 games each time.
 
 \begin{figure}
-\caption{Optimized Training Stats}
-\label{figure:training}
-\begin{adjustbox}{center}
-\includegraphics[width=157pt]{training}
-\end{adjustbox}
-\centering
+\caption{Unoptimized Training Stats}
+\label{figure:500training}
+\includegraphics[width=136pt]{500training}
 \end{figure}
 
 Each of the six trained models had very similar levels of accuracy and loss.  The mean validation accuracy was 62.10\% with 1 standard deviation of 0.08\%.  The mean validation loss was  0.64625 with 1 standard deviation of 0.00089.  This is a 0.4\% higher accuracy than any of the results achieved during the model selection, and I was pleasantly surprised.  The reason is because the training set is larger.
@@ -398,15 +395,19 @@ The naive bayesian classifier was trained using  using the same dataset availabl
 
 \subsection {Unoptimized Neural Network Accuracy}
 
-\begin{figure}
-\caption{Unoptimized Training Stats}
-\label{figure:500training}
-\includegraphics[width=136pt]{500training}
-\end{figure}
 
 The initial 2 layer, 500 perceptron network achieved 59.2\% accuracy on validation data, as show in Figure \ref{figure:500training}.  Through the choice of better hyperparameters, accuracy is increased by about 3\%.
 
 \subsection {Optimized Neural Network Accuracy}
+
+\begin{figure}
+\caption{Optimized Training Stats}
+\label{figure:training}
+\begin{adjustbox}{center}
+\includegraphics[width=157pt]{training}
+\end{adjustbox}
+\centering
+\end{figure}
 
 \begin{table}[h]
 \caption{Model Accuracy}
