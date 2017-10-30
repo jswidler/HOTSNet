@@ -15,6 +15,7 @@ The required dependecies are:
 * sklean
 * tensorflow
 * keras
+* requests
 
 ### Obtaining the dataset
 
